@@ -1,0 +1,131 @@
+<style>
+    #upload-data-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+        z-index: 9999; /* Ensure the upload-data-overlay is on top of other elements */
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    #upload-data-spinner {
+        width: 50px;
+        height: 50px;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        display: grid;
+        animation: spin 1.5s infinite linear, changeColor 6s infinite linear;
+        transform-origin: 50% 80%;
+    }
+
+    #upload-data-spinner:before,
+    #upload-data-spinner:after {
+        content: "";
+        grid-area: 1/1;
+        border-radius: 50%;
+        animation: inherit;
+        animation-duration: 1s;
+        transform-origin: inherit;
+    }
+
+    #upload-data-spinner:before {
+        border: 8px solid transparent;
+        box-shadow: 0 0 0 8px #003087; /* Initial color for the first ring */
+    }
+
+    #upload-data-spinner:after {
+        --s: -1;
+        border: 8px solid transparent;
+        box-shadow: 0 0 0 8px #8A8D8F; /* Initial color for the second ring */
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(calc(var(--s, 1) * 1turn));
+        }
+    }
+
+    @keyframes changeColor {
+        0%, 100% {
+            box-shadow: 0 0 0 2px transparent; /* Start and end with transparent box-shadow */
+        }
+        25% {
+            box-shadow: 0 0 0 2px #003087; /* Quarter rotation color for the first ring */
+        }
+        50% {
+            box-shadow: 0 0 0 2px #8A8D8F; /* Half rotation color for the second ring */
+        }
+        75% {
+            box-shadow: 0 0 0 2px #fff; /* Three-quarter rotation color for the third ring */
+        }
+    }
+
+    .upload-data-overlay-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10000; /* Ensure the text is on top of the upload-data-spinner */
+        color: white; /* Adjust text color as needed */
+    }
+
+</style>
+
+<div id="upload-data-overlay" style="display: none;">
+    <div class="upload-data-overlay-text"><h5>Uploading comments...</h5></div>
+    <div id="upload-data-spinner"></div>
+</div>
+
+<div class="container">
+    <h3>Submit Comments</h3><hr>
+    <div class="row">
+        <div class="col-12">
+            <a class="btn btn-secondary w-100" href="{% url 'chat' event.id %}">Chat with Comments&nbsp;<i class="bi bi-arrow-right"></i></a>
+        </div>
+    </div>
+    <hr>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input name="data-file" class="form-control form-control-sm" id="formFileSm" type="file">
+        </div>
+        <button class="btn btn-primary w-100" name="upload-comments" type="submit" id="uploadDataButton">Upload Data</button>  
+    </form>
+    <hr>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 m-1">
+                {{ comment_form.observation }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 m-1">
+                {{ comment_form.discussion }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 m-1">
+                {{ comment_form.recommendation }}
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary w-100" name="submit-comments">Submit Comments</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#uploadDataButton").on("click", function (event) {
+            $("#upload-data-overlay").show();
+        });
+    });
+</script>

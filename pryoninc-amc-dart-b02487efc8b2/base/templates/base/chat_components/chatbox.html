@@ -1,0 +1,292 @@
+<style>
+    .chat-container  {
+        height: 90vh;
+        overflow: scroll;
+    }
+
+    .messages-col {
+        min-height: 70vh;
+    }
+
+    .message-bar {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        padding: 10px;
+        background-color: #333333;
+        border-top: 1px solid #555555;
+        height: 10vh;
+    }
+
+    .message {
+        background-color: #444444;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 10px;
+        max-height: 24vh;
+        overflow: scroll;
+    }
+
+    .message-bar input {
+        border: 1px solid #555555;
+        border-radius: 5px;
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: #555555;
+        color: #ffffff;
+    }
+
+    .message-bar input::placeholder {
+        color: #cccccc;
+    }
+
+    .message-bar-btn {
+        max-height: 60px;
+        /* width: 300px; */
+        overflow: scroll;
+    }
+
+    .chat-row {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .chat-bubble {
+        background-color: #007bff;
+        color: white;
+        border-radius: 12px;
+        max-width: 40%;
+        max-height: 15vh;
+        overflow: scroll;
+        padding: 10px 15px;
+        margin: 10px;
+        position: relative;
+        align-self: flex-end;
+    }
+
+    .chat-bubble::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-right: 12px solid #003d7d;
+        left: -11px;
+        top: 12px;
+    }
+
+    .summmary-bubble {
+        background-color: #415b76;
+        color: white;
+        border-radius: 12px;
+        max-width: 85%;
+        max-height: 15vh;
+        overflow: scroll;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        position: relative;
+        align-self: flex-end;
+    }
+
+    .summary-bubble::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-right: 12px solid #415b76;
+        left: -11px;
+        top: 12px;
+    }
+
+
+    .user-info {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        position: absolute;
+        right: 10px;
+    }
+
+
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    #spinner {
+        width: 50px;
+        height: 50px;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        display: grid;
+        animation: spin 1.5s infinite linear, changeColor 6s infinite linear;
+        transform-origin: 50% 80%;
+    }
+
+    #spinner:before,
+    #spinner:after {
+        content: "";
+        grid-area: 1/1;
+        border-radius: 50%;
+        animation: inherit;
+        animation-duration: 1s;
+        transform-origin: inherit;
+    }
+
+    #spinner:before {
+        border: 8px solid transparent;
+        box-shadow: 0 0 0 8px #003087;
+    }
+
+    #spinner:after {
+        --s: -1;
+        border: 8px solid transparent;
+        box-shadow: 0 0 0 8px #8A8D8F;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(calc(var(--s, 1) * 1turn));
+        }
+    }
+
+    @keyframes changeColor {
+        0%, 100% {
+            box-shadow: 0 0 0 2px transparent;
+        }
+        25% {
+            box-shadow: 0 0 0 2px #003087;
+        }
+        50% {
+            box-shadow: 0 0 0 2px #8A8D8F;
+        }
+        75% {
+            box-shadow: 0 0 0 2px #fff;
+        }
+    }
+
+    .overlay-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10000;
+        color: white;
+    }
+
+</style>
+
+<div id="overlay" style="display: none;">
+    <div class="overlay-text"><h5>Summarizing...</h5></div>
+    <div id="spinner"></div>
+</div>
+
+<div class="container chat-container">
+    <div class="row chat-row">
+        <div class="col messages-col">
+            <div class="container">
+                {% for query in queries %}
+                <div class="row justify-content-end">
+                    <div class="col-12 chat-bubble">
+                        <div class="me-5 mt-2">
+                            <div class="user-info"><p>{{ user }}</p></div>
+                            {{ query.query }}
+                            {{ query.event}}
+                        </div>
+                    </div>
+                </div>
+                {% if query.summary %}
+                <div class="row">
+                    <div class="col-12 summmary-bubble">
+                        <div class="me-5 mt-2">
+                            <p><b>Summary:</b> {{ query.summary }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="row justify-content-start">
+                    {% for response in query.responses %}
+                    <div class="col-11 col-md-5 m-1 message">
+                        {{ response.0 }}<hr>
+                        <small class="text-white"><b><i>Sentiment: </i></b>{{ response.1 }}</small> |
+                        <small class="text-white"><b><i>Distance: </i></b>{{ response.2 }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3" style="margin-bottom: 100px;">
+        <div class="col-12 col-md-4 text-center">
+            <form action="" method="post" {% if summarize %} id="lastQuestionForm" {% endif %}>
+                {% csrf_token %}
+                <button class="btn btn-secondary m-1 message-bar-btn" name="last-query" type="submit">Repeat Last Question</button>
+            </form>
+        </div>
+        <div class="col-12 col-md-4 text-center">
+            <form action="" method="post">
+                {% csrf_token %}
+                <button class="btn btn-secondary message-bar-btn m-1" name="tell-me-more" type="submit"><i>"Show me comments about..."</i></button>
+            </form>
+        </div>
+        {% if queries %}
+        <div class="col-12 col-md-4 text-center">
+            <form action="" method="post">
+                {% csrf_token %}
+                <button class="btn btn-secondary m-1 message-bar-btn" name="clear-chat" type="submit">Clear Chat</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row message-bar">
+        <form action="" method="post" {% if summarize %} id="queryForm" {% endif %}>
+            {% csrf_token %}
+            <input type="text" class="form-control" placeholder="Type your message..." name="query">
+        </form>
+    </div>
+
+</div>
+
+<script>
+    function scrollToBottom() {
+        var chatContainer = document.querySelector('.chat-container');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    window.onload = function() {
+        scrollToBottom();
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var tellMeMoreButton = document.querySelector('button[name="tell-me-more"]');
+        var queryInput = document.querySelector('input[name="query"]');
+        tellMeMoreButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            queryInput.value = "Show me comments about ";
+            queryInput.focus();
+        });
+    });
+
+    $(document).ready(function () {
+        $("#queryForm").on("submit", function (event) {
+            $("#overlay").show();
+        });
+        $("#lastQuestionForm").on("click", function (event) {
+            $("#overlay").show();
+        });
+    });
+</script>

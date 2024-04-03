@@ -1,0 +1,131 @@
+<style>
+    .insights-container {
+        height: 90vh;
+        overflow: scroll;
+    }
+
+    .insights-container h4 {
+        color: #007bff;
+    }
+
+    .summary, .topics {
+        height: 40vh;
+        overflow: scroll;
+    }
+
+
+
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
+        z-index: 9999; /* Ensure the overlay is on top of other elements */
+        justify-content: center;
+        align-items: center;
+        display: flex;
+    }
+
+    #spinner {
+        width: 50px;
+        height: 50px;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        display: grid;
+        animation: spin 1.5s infinite linear, changeColor 6s infinite linear;
+        transform-origin: 50% 80%;
+    }
+
+    #spinner:before,
+    #spinner:after {
+        content: "";
+        grid-area: 1/1;
+        border-radius: 50%;
+        animation: inherit;
+        animation-duration: 1s;
+        transform-origin: inherit;
+    }
+
+    #spinner:before {
+        border: 8px solid transparent;
+        box-shadow: 0 0 0 8px #003087; /* Initial color for the first ring */
+    }
+
+    #spinner:after {
+        --s: -1;
+        border: 8px solid transparent;
+        box-shadow: 0 0 0 8px #8A8D8F; /* Initial color for the second ring */
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(calc(var(--s, 1) * 1turn));
+        }
+    }
+
+    @keyframes changeColor {
+        0%, 100% {
+            box-shadow: 0 0 0 2px transparent; /* Start and end with transparent box-shadow */
+        }
+        25% {
+            box-shadow: 0 0 0 2px #003087; /* Quarter rotation color for the first ring */
+        }
+        50% {
+            box-shadow: 0 0 0 2px #8A8D8F; /* Half rotation color for the second ring */
+        }
+        75% {
+            box-shadow: 0 0 0 2px #fff; /* Three-quarter rotation color for the third ring */
+        }
+    }
+
+    .overlay-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10000; /* Ensure the text is on top of the spinner */
+        color: white; /* Adjust text color as needed */
+    }
+
+
+</style>
+
+
+<div id="overlay" style="display: none;">
+    <div class="overlay-text"><h5>Summarizing...</h5></div>
+    <div id="spinner"></div>
+</div>
+
+
+<div class="container insights-container">
+    <h3 class="text-center">Event Insights</h3><hr>
+    <div class="row">
+        <div class="col">
+            <i><h4 class="text-center">Summary</h4></i>
+        </div>
+    </div>
+    {% if event.summary %}
+    <div class="row">
+        <div class="col">
+            <p>{{ event.summary }}</p>
+        </div>
+    </div>
+    {% endif %}
+    <div class="text-center">
+        <form action="" method="post">
+            {% csrf_token %}
+            <button class="btn btn-secondary mt-3 mb-3" type="submit" name="summarize-event" id="summarizeEvent">Summarize</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#summarizeEvent").on("click", function (event) {
+            $("#overlay").show();
+        });
+    });
+</script>

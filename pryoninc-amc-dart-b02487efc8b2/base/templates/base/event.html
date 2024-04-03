@@ -1,0 +1,30 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .insights-col, .comment-col {
+        height: 90vh;
+        overflow: scroll;
+    }
+
+    @media (min-width: 768px) {
+        .insights-col {
+            border-right: 1px solid lightgray;
+        }
+    }
+</style>
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-12 col-md-6 border-md-end insights-col">
+            {% include 'base/comment_components/insights.html' %}
+        </div>
+
+        <div class="col-12 col-md-6 comment-col text-center">
+            {% include 'base/comment_components/submit.html' %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
