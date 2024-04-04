@@ -9,8 +9,4 @@ More details will be added later, including instalation instructions and docker 
 
 
 Disclaimer: 
-This code and its associated documentation are provided on an "as-is" basis, without warranty of any kind, expressed or implied. No support or maintenance is promised or implied by any party. The user of the code bears all responsibility for its safe and proper use, including compliance with any applicable laws and regulations. It is the user's responsibility to assess the suitability of the code for their intended use.
-
-By using, copying, modifying, or distributing the code (or any work based on the code), you accept and agree to be bound by the terms of this disclaimer. 
-
-
+IT IS EXPRESSLY UNDERSTOOD THAT THE SOFTWARE IS PROVIDED WITHOUT ANY WARRANTY OF ANY TYPE OR NATURE ON AN “AS IS” AND “WITH ALL FAULTS” BASIS. PRYON DISCLAIMS ALL EQUITABLE INDEMNITIES, AS WELL AS ALL WARRANTIES, WHETHER STATUTORY, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, ANY STATUTORY OR IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, QUIET ENJOYMENT, AND NON-INFRINGEMENT. ANY USE OF THE SOFTWARE IS SOLELY AT CUSTOMERS SOLE RISK.
