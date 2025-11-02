@@ -1,0 +1,16 @@
+# Project dependencies
+#
+# The original prototype depended on a number of heavy libraries such as
+# `ollama`, `chromadb-client` and `sentence-transformers`.  To simplify
+# installation and remove any need for network access those requirements have
+# been eliminated.  Only Django is strictly necessary to run the web
+# application and requests is included for potential future integrations.
+
+Django>=4.2,<5.0
+requests>=2.25,<3.0
+# Include the `ollama` client so that the application can connect to a local
+# ollama server and list/generate language models.  If you do not wish to
+# integrate with Ollama you can remove this line.
+ollama
+markdown
+bleach
