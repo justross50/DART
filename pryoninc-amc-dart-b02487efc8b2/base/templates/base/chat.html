@@ -1,0 +1,102 @@
+{% extends 'base/index.html' %}
+{% load static %}
+
+{% block content %}
+  
+<style>
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+        display: none;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    ::-webkit-scrollbar:hover {
+        display: block;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 d-none d-md-block full-height-container border-end">
+            <div class="p-3">
+                <h4 class="mb-3">Chat Settings</h4>
+                
+                <form action="" method="post" id="model-select-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="ollama-model-select" class="form-label">LLM Model</label>
+                        <select class="form-select bg-dark text-white" id="ollama-model-select" name="ollama-model">
+                            {% if ollama_models %}
+                                {% for model in ollama_models %}
+                                    <option value="{{ model }}" {% if model == selected_model %}selected{% endif %}>{{ model }}</option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="">No models found</option>
+                            {% endif %}
+                        </select>
+                        <input type="hidden" name="select-model" value="1">
+                    </div>
+                </form>
+
+                <hr>
+
+                <form method="post" class="mb-3 text-center">
+                    {% csrf_token %}
+                    <button type="submit" name="summarize" class="btn btn-outline-warning w-100">
+                        {% if summarize %}Disable{% else %}Enable{% endif %} Summarization
+                    </button>
+                </form>
+
+                <div class="d-grid gap-2">
+                    <form action="" method="post" {% if summarize %} id="lastQuestionForm" {% endif %}>
+                        {% csrf_token %}
+                        <button class="btn btn-secondary w-100 mb-2" name="last-query" type="submit">Repeat Last Question</button>
+                    </form>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-secondary w-100 mb-2" name="tell-me-more" type="submit"><i>"Show me comments about..."</i></button>
+                    </form>
+                    {% if queries %}
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger w-100" name="clear-chat" type="submit">Clear Chat</button>
+                    </form>
+                    {% endif %}
+                </div>
+                
+                <hr>
+                
+                <h5>Events</h5>
+                <div class="list-group">
+                    {% for user_event in user_events %}
+                        <a href="{% url 'chat' user_event.id %}" class="list-group-item list-group-item-action {% if user_event.id == event.id %}active{% endif %}">
+                            {{ user_event.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            {% include 'base/chat_components/chatbox.html' %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modelSelect = document.getElementById('ollama-model-select');
+    if (modelSelect) {
+        modelSelect.addEventListener('change', function() {
+            document.getElementById('model-select-form').submit();
+        });
+    }
+});
+</script>
+
+{% endblock content %}
